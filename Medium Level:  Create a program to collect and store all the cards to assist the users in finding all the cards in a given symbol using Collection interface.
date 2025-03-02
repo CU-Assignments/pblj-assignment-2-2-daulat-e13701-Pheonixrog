@@ -1,0 +1,37 @@
+import java.util.*;
+
+class CardCollection {
+    private Map<String, List<String>> cards = new HashMap<>();
+
+    void addCard(String symbol, String name) {
+        cards.putIfAbsent(symbol, new ArrayList<>());
+        cards.get(symbol).add(name);
+    }
+
+    List<String> getCards(String symbol) {
+        return cards.getOrDefault(symbol, Collections.emptyList());
+    }
+}
+
+public class CardManager {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        CardCollection collection = new CardCollection();
+        while (true) {
+            System.out.println("1. Add Card 2. Get Cards 3. Exit");
+            int choice = sc.nextInt();
+            if (choice == 3) break;
+            switch (choice) {
+                case 1:
+                    System.out.println("Enter Symbol and Card Name:");
+                    collection.addCard(sc.next(), sc.next());
+                    break;
+                case 2:
+                    System.out.println("Enter Symbol:");
+                    System.out.println(collection.getCards(sc.next()));
+                    break;
+            }
+        }
+        sc.close();
+    }
+}

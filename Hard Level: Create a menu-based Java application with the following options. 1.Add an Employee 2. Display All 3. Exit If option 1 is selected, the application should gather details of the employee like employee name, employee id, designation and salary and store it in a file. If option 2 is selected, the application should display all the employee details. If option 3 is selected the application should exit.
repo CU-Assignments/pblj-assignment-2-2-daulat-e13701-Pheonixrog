@@ -1,0 +1,65 @@
+import java.io.*;
+import java.util.*;
+
+class Employee implements Serializable {
+    int id;
+    String name, designation;
+    double salary;
+
+    Employee(int id, String name, String designation, double salary) {
+        this.id = id;
+        this.name = name;
+        this.designation = designation;
+        this.salary = salary;
+    }
+
+    public String toString() {
+        return "ID: " + id + ", Name: " + name + ", Designation: " + designation + ", Salary: " + salary;
+    }
+}
+
+public class EmployeeManagement {
+    static final String FILE_NAME = "employees.dat";
+
+    public static void addEmployee() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter ID, Name, Designation, Salary:");
+        Employee emp = new Employee(sc.nextInt(), sc.next(), sc.next(), sc.nextDouble());
+
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME, true))) {
+            oos.writeObject(emp);
+            System.out.println("Employee added.");
+        } catch (IOException e) {
+            System.out.println("Error saving employee.");
+        }
+    }
+
+    public static void displayEmployees() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
+            while (true) {
+                try {
+                    Employee emp = (Employee) ois.readObject();
+                    System.out.println(emp);
+                } catch (EOFException e) {
+                    break;
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("No employees found.");
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Error reading employee file.");
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        while (true) {
+            System.out.println("1. Add Employee 2. Display All 3. Exit");
+            int choice = sc.nextInt();
+            if (choice == 3) break;
+            if (choice == 1) addEmployee();
+            if (choice == 2) displayEmployees();
+        }
+        sc.close();
+    }
+}
